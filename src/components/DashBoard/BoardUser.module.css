@@ -1,0 +1,13 @@
+.board{
+  /*display: flex;*/
+  /*justify-content: center;*/
+  /*align-items: center;*/
+  height: 200px;
+  margin: 50px auto;
+}
+.board > div {
+  margin-bottom: 24px;
+}
+.board p {
+  margin-bottom: 8px;
+}

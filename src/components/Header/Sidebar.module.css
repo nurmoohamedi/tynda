@@ -1,0 +1,231 @@
+header{
+
+}
+.sidebar_top {
+    margin: 24px 0;
+}
+.sidebar_logo {
+    width: 140px;
+}
+
+.search_box {
+
+    width: 500px;
+    /*height: 40px;*/
+    padding: 10px 25px;
+
+    border-radius: 40px;
+    background: #2c3441;
+
+    display: flex;
+    justify-content: space-between;
+}
+
+.search_box input {
+    width: 90%;
+    border: none;
+    outline: none;
+    background: none;
+    color: #d4d4d4;
+    font-size: 1rem;
+
+    padding: 0;
+}
+
+.search_box a {
+    color: #21DFCD;
+    /*width: 20px;*/
+    /*height: 20px;*/
+
+    padding: 5px;
+    background: #575e65;
+    border-radius: 50%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    transition: 400ms;
+}
+
+.search_box a:hover {
+    transform: rotate(360deg) scale(0.8);
+}
+
+.nav {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.nav a {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    color: #e8e8e8;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: cubic-bezier(0.25, 0.8, 0.25, 1) 400ms;
+}
+
+.nav a:is(.active, :hover,:focus) {
+    color: #f3f3f3;
+}
+
+.nav_link {
+    font-size: 14px;
+}
+
+.nav_link__span {
+    /*display: block;*/
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/*  Hamburger   */
+.container{
+    max-width: 1150px;
+    width: 97%;
+    margin: auto;
+}
+.wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 80px;
+    position: unset;
+
+    /*padding: 0 20px;*/
+}
+
+.menu_items {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100vh;
+
+    transform: translate(-150%);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 20;
+    transition: transform 0.5s ease-in-out;
+    background: #fff;
+}
+.menu_items a {
+    text-decoration: none;
+    margin-bottom: 1.2rem;
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+.menu_items a:hover {
+    text-decoration: underline;
+}
+
+.active{
+    /*display: flex;*/
+    transform: translate(0%);
+}
+
+.hamburger {
+    position: relative;
+    display: none;
+
+    /*right: 50px;*/
+
+    width: 30px;
+    height: 3px;
+
+    background: #481173;
+    transform-origin: center;
+    border-radius: 25px;
+    transition: 0.5s ease-in-out;
+
+    z-index: 50;
+    cursor: pointer;
+}
+.hamburger::after,
+.hamburger::before {
+    content: "";
+    transition: 0.5s ease-in-out;
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: 3px;
+    border-radius: 25px;
+    background: #481173;
+}
+.hamburger::before {
+    top: -10px;
+}
+.hamburger::after {
+    bottom: -10px;
+}
+
+input[type="checkbox"] {
+    position: absolute;
+    /*left: 23px;*/
+    /*top: 16px;*/
+    width: 33px;
+    height: 33px;
+
+    margin: 0;
+
+    z-index: 55;
+    display: none;
+    opacity: 0;
+    cursor: pointer;
+}
+input[type="checkbox"]:checked ~ .menu_items {
+    transform: translate(0%);
+    background: #cb11ab;
+}
+input[type="checkbox"]:checked + .hamburger {
+    transform: rotate(45deg);
+}
+input[type="checkbox"]:checked + .hamburger::after {
+    transform: rotate(90deg);
+    bottom: 0;
+}
+input[type="checkbox"]:checked + .hamburger::before {
+    transform: rotate(90deg);
+    top: 0;
+}
+
+
+@media (max-width: 860px) {
+    .logo img {
+        width: 44px;
+        height: 44px;
+        padding: 0;
+    }
+
+    .search_box {
+        display: none;
+    }
+
+    .nav {
+        /*display: none;*/
+    }
+
+    .hamburger {
+        display: block;
+    }
+
+    input[type="checkbox"] {
+        display: block;
+    }
+}
