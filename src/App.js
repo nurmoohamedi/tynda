@@ -1,7 +1,7 @@
 import './App.css';
 import Login from "./components/Login/Login";
 import * as React from "react";
-import {Route, Routes} from "react-router-dom";
+import {NavLink, Route, Routes} from "react-router-dom";
 import {useState} from "react";
 import HomePage from "./components/Home/HomePage";
 import PlayerBar from "./components/Footer/PlayerBar";
@@ -9,6 +9,7 @@ import Sidebar from "./components/Header/Sidebar";
 import BoardUser from "./components/DashBoard/BoardUser";
 import Tracks from "./components/Tracks/Tracks";
 import Media from "./components/Media";
+import Playlist from "./components/Playlists/Playlist";
 
 function App() {
 
@@ -35,8 +36,8 @@ function App() {
                 {
                   true ? (
                     <div className="login_buttons">
-                      <button className="btn btn-outlined">Sing up</button>
-                      <button className="btn btn-filled">Login</button>
+                      <NavLink to="/signup" className="btn btn-outlined">Sing up</NavLink>
+                      <NavLink to="/login" className="btn btn-filled">Login</NavLink>
                     </div>
                   ) : null
                 }
@@ -46,6 +47,7 @@ function App() {
               <Route path={"/login"} element={<Login/>}/>
               {/*<Route path={"app/*"} element={<Main showSnack={showSnack}/>}/>*/}
               <Route path={"/playlists"} element={<BoardUser />}/>
+              <Route path={"/playlist/:id"} element={<Playlist />}/>
               <Route path={"/tracks"} element={<Tracks />}/>
               <Route path={"/media"} element={<Media />}/>
               <Route path={"/"} exact element={<HomePage />}/>
