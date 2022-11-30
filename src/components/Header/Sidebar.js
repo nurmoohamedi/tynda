@@ -3,7 +3,7 @@ import {useEffect, useState} from "react";
 import {NavLink, useLocation, useNavigate} from "react-router-dom";
 // import {connect} from "react-redux";
 import styles from "./Sidebar.module.css"
-import {useMediaQuery} from "../../helpers/useMediaQuery";
+import {useMediaQuery} from "../../utils/useMediaQuery";
 import AuthService from "../../services/authService";
 
 import logo_small from "../../assets/img/tynda_logo.png"

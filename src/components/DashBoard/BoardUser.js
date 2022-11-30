@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./BoardUser.module.css"
 import UserService from "../../services/user.service";
 import EventBus from "../../common/EventBus";
-import withAuthRedirect from "../../helpers/withAuthRedirect";
+import withAuthRedirect from "../../utils/withAuthRedirect";
 
 const BoardUser = () => {
   const [content, setContent] = useState("");
