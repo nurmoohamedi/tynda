@@ -16,47 +16,80 @@ import {
   LibraryMusic,
   LibraryMusicOutlined,
   MusicNote,
-  MusicNoteOutlined,
-  Search,
+  MusicNoteOutlined, Person,
+  Search, VerifiedUser,
   ZoomInSharp
 } from "@mui/icons-material";
+import {connect} from "react-redux";
+import {ROLES} from "../../constants";
 
 const navs = [
   {
     id: 1, name: "Home",
-    icon: <HomeOutlined />, icon_clicked: <Home/>,
-    to: "/"},
+    icon: <HomeOutlined/>, icon_clicked: <Home/>,
+    to: "/"
+  },
   {
     id: 2, name: "Search",
-    icon: <Search />, icon_clicked: <ZoomInSharp/>,
+    icon: <Search/>, icon_clicked: <ZoomInSharp/>,
     to: "/search"
-  },
-  {
-    id: 3, name: "Podcasts and books",
-    icon: <MusicNoteOutlined />, icon_clicked: <MusicNote/>,
-    to: "/podcast"
-  },
-  {id: 4, name: "Streams",
-    icon: <ContactlessOutlined />, icon_clicked: <Contactless/>,
-    to: "/stream"},
-  // {id: 3, name: "Streams", icon: <Stream />, to: "/stream"},
-  {
-    id: 5, name: "Liked Songs",
-    icon: <LibraryMusicOutlined />, icon_clicked: <LibraryMusic />,
-    to: "/tracks"},
+  }
   // {id: 5, name: "Contact", icon: <Contactless />, to: "/contact"},
 ]
+const adminNavs = [
+  {
+    id: 1, name: "Users",
+    icon: <Person/>, icon_clicked: <Person/>,
+    to: "/users"
+  },
+  {
+    id: 2, name: "Playlists",
+    icon: <LibraryMusicOutlined/>, icon_clicked: <LibraryMusic/>,
+    to: "/playlist"
+  },
+  {
+    id: 3, name: "Authors",
+    icon: <MusicNoteOutlined/>, icon_clicked: <MusicNoteOutlined/>,
+    to: "/author"
+  },
+]
+const moderatorNavs = [
+  {
+    id: 1, name: "Liked Songs",
+    icon: <LibraryMusicOutlined/>, icon_clicked: <LibraryMusic/>,
+    to: "/tracks"
+  },
+]
+const userNavs = [
+  {
+    id: 1, name: "Podcasts and books",
+    icon: <MusicNoteOutlined/>, icon_clicked: <MusicNote/>,
+    to: "/podcast"
+  },
+  {
+    id: 2, name: "Streams",
+    icon: <ContactlessOutlined/>, icon_clicked: <Contactless/>,
+    to: "/stream"
+  },
+  // {id: 3, name: "Streams", icon: <Stream />, to: "/stream"},
+  {
+    id: 3, name: "Liked Songs",
+    icon: <LibraryMusicOutlined/>, icon_clicked: <LibraryMusic/>,
+    to: "/tracks"
+  },
+]
 
-const Sidebar = ({basketSize}) => {
+const Sidebar = ({userRole}) => {
 
   const [activeNav, setActiveNav] = useState(0);
   const [isLogged, setIsLogged] = useState(false);
   const [checked, setChecked] = useState(false);
+  const [currNavs, setCurrNavs] = useState(null);
 
   const location = useLocation();
 
   useEffect(() => {
-    navs.forEach(nav => {
+    currNavs && currNavs.forEach(nav => {
       if (location.pathname === "/")
         setActiveNav(1);
       else if (location.pathname.includes("search"))
@@ -76,6 +109,16 @@ const Sidebar = ({basketSize}) => {
     }
   }, [location]);
 
+  useEffect(() => {
+    if (userRole === ROLES.ROLE_ADMIN) {
+      setCurrNavs(adminNavs);
+    } else if (userRole === ROLES.ROLE_MODERATOR) {
+      setCurrNavs(moderatorNavs);
+    } else if (userRole === ROLES.ROLE_USER) {
+      setCurrNavs(userNavs);
+    } else setCurrNavs([]);
+  }, [userRole]);
+
   let isPageSmall = useMediaQuery('(max-width:860px)')
   const navigate = useNavigate()
 
@@ -87,7 +130,6 @@ const Sidebar = ({basketSize}) => {
 
     setChecked(prevState => !prevState);
   }
-
   const onLogin = () => {
     if (isLogged) {
       AuthService.logout();
@@ -108,6 +150,7 @@ const Sidebar = ({basketSize}) => {
     }
     debugger
   }
+
   return (
     <>
       <div className={styles.sidebar_top}>
@@ -126,7 +169,7 @@ const Sidebar = ({basketSize}) => {
               key={nav.id}
               to={nav.to}
               className={nav.id === activeNav && styles.active}>
-              { nav.id === activeNav ? nav.icon_clicked : nav.icon }
+              {nav.id === activeNav ? nav.icon_clicked : nav.icon}
               <span>
                 {nav.name}
               </span>
@@ -134,10 +177,34 @@ const Sidebar = ({basketSize}) => {
           )
         }
       </nav>
+      {
+        currNavs && currNavs?.length > 0 ? (
+          <>
+            <hr className="line"/>
+            <nav className={isPageSmall ? styles.menu_items + " " + (checked && styles.active) : styles.nav}>
+              {
+                currNavs && currNavs?.length > 0 && currNavs.map(nav =>
+                    <NavLink
+                      onClick={() => setChecked(false)}
+                      key={nav.id}
+                      to={nav.to}
+                      className={nav.id === activeNav && styles.active}>
+                      {nav.id === activeNav ? nav.icon_clicked : nav.icon}
+                      <span>
+                        {nav.name}
+                      </span>
+                    </NavLink>
+                )
+              }
+            </nav>
+          </>
+        ) : null
+      }
     </>
   )
 }
 
-// const mapStateToProps = (state) => ({basketSize: state.basket.basketItems.length})
-// export default connect(mapStateToProps, null)(Header);
-export default Sidebar;
+const mapStateToProps = ({user: {userRole}}) => ({userRole})
+export default connect(({
+                          user: {userRole}
+                        }) => ({userRole}), null)(Sidebar);

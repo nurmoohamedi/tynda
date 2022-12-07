@@ -10,7 +10,20 @@ import 'swiper/css/scrollbar';
 import {useParams} from "react-router-dom";
 import Paginator from "../../common/Paginator";
 import PlaylistsService from "../../services/playlistsService";
-import {InputBase, MenuItem, Select, styled, TextField} from "@mui/material";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  InputBase,
+  MenuItem,
+  Select,
+  styled,
+  TextField
+} from "@mui/material";
+import non_img from '../../assets/icons/i_playlist.webp'
+import {Close, MusicNoteSharp} from "@mui/icons-material";
+import PropTypes from "prop-types";
 
 const CssTextField = styled(TextField)({
   '& label': {
@@ -50,6 +63,51 @@ const CssSelect = styled(InputBase)({
   },
 });
 
+const BootstrapDialog = styled(Dialog)(({theme}) => ({
+  '& .MuiDialogContent-root': {
+    padding: theme.spacing(2),
+    color: '#fff',
+    borderTop: '1px solid #3e3e3e',
+    borderBottom: '1px solid #3e3e3e'
+  },
+  '& .MuiDialogActions-root': {
+    padding: theme.spacing(1),
+  },
+  '& .MuiPaper-root': {
+    borderRadius: '8px',
+    backgroundColor: '#282828'
+  },
+}));
+
+function BootstrapDialogTitle(props) {
+  const {children, onClose, ...other} = props;
+
+  return (
+    <DialogTitle sx={{m: 0, p: 2}} {...other}>
+      {children}
+      {onClose ? (
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <Close/>
+        </IconButton>
+      ) : null}
+    </DialogTitle>
+  );
+}
+
+BootstrapDialogTitle.propTypes = {
+  children: PropTypes.node,
+  onClose: PropTypes.func.isRequired,
+};
+
 const Playlist = () => {
   const [page_size, setPageSize] = useState(5);
   const {id} = useParams();
@@ -57,22 +115,25 @@ const Playlist = () => {
   const [playlist, setPlaylist] = useState({});
   const [musics, setMusics] = useState({});
   const [cur_page, setCur_page] = useState(1);
-
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    PlaylistsService.getPlaylistById(id)
-      .then(data => {
-        if (data) {
-          setPlaylist(data)
-        }
-      })
+    getPlaylistById();
     getMusics(cur_page, page_size);
   }, []);
 
   useEffect(() => {
     getMusics(cur_page, page_size);
   }, [page_size])
+
+  const getPlaylistById = () => {
+    PlaylistsService.getPlaylistById(id)
+      .then(data => {
+        if (data) {
+          setPlaylist(data)
+        }
+      })
+  }
 
   const getMusics = (pageNo, pageSize, sortBy, sortDir) => {
     PlaylistsService.getMusics(pageNo, pageSize, sortBy, sortDir)
@@ -135,24 +196,61 @@ const Playlist = () => {
     // })
     let music_list = [];
     for (let muz in musics.content) {
-      debugger
       if (musics.content[muz].name.toLowerCase().includes(search.toLowerCase())) {
         music_list.push(musics.content[muz]);
-        debugger
       }
     }
     if (music_list.length !== 0)
       setMusics(music_list)
+  }
 
-    console.log(music_list)
-    debugger
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const onSubmit = (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    // eslint-disable-next-line no-console
+    const body = {
+      img_link: null,
+      name: data.get('name'),
+      musics: null
+    };
+    onSave(body);
+  }
+
+  const onSave = (data) => {
+    PlaylistsService.updatePlaylist(playlist.id, data)
+      .then(data => {
+        handleClose();
+        getPlaylistById();
+        }, error => {
+          alert(error)
+        }
+      );
+  }
+
+  const onValueChange = (event) => {
+    console.log(event.target.value)
+
+    let pl = playlist;
+    pl.name = event.target.value;
+    console.log(pl)
+    setPlaylist({...pl})
   }
 
   return (
     <div className="wrapper">
       <div className="playlist__top">
-        <div className="playlist-img">
-          <img src={playlist.img_link}/>
+        <div className="playlist-img pointer" onClick={handleClickOpen}>
+          <img src={playlist?.img_link || non_img}/>
         </div>
         <div className="playlist-details">
           {
@@ -163,7 +261,7 @@ const Playlist = () => {
                     {playlist.name}
                   </div>
                   <div className="playlist__detail">
-                    {musics.totalElementsД} songs, 2 hr 5 min
+                    {musics.totalElements} songs, 2 hr 5 min
                   </div>
                 </>
               ) : null
@@ -252,6 +350,46 @@ const Playlist = () => {
             ) : null
         }
       </div>
+      <BootstrapDialog
+        onClose={handleClose}
+        aria-labelledby="custom-modal"
+        id="modal-wrapper"
+        open={open}
+      >
+        <BootstrapDialogTitle id="modal-header" onClose={handleClose}>
+          Change Playlist
+        </BootstrapDialogTitle>
+        <DialogContent dividers id="modal-body">
+          <form onSubmit={onSubmit}>
+            <div className="modal-wrapper">
+              <div className="modal-album">
+                <input type="file" name="img" accept="image/png, image/jpeg"/>
+                <div className="album-icon">
+                  {
+                    playlist?.img_link
+                      ? <img className="album-img" src={playlist.img_link} alt=""/>
+                      : <MusicNoteSharp width="48px"/>
+                  }
+                </div>
+              </div>
+              <div className="modal-name">
+                <input type="text" name="name" value={playlist.name} onChange={onValueChange} required placeholder="Name"/>
+              </div>
+              <div className="modal-description">
+                <textarea name="desc" id="" placeholder="Description"></textarea>
+              </div>
+              <div className="modal-save">
+                <button type="submit" className="btn btn-filled">Save</button>
+              </div>
+            </div>
+          </form>
+        </DialogContent>
+        {/*<DialogActions id="modal-footer">*/}
+        {/*  <Button autoFocus onClick={handleClose}>*/}
+        {/*    Save changes*/}
+        {/*  </Button>*/}
+        {/*</DialogActions>*/}
+      </BootstrapDialog>
     </div>
   )
 }

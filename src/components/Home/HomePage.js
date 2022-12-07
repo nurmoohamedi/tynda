@@ -22,10 +22,10 @@ const HomePage = () => {
   const getPlaylists = () => {
     PlaylistsService.getPlaylists()
       .then(data => {
-        if (data) {
-          setPlaylists(data.content);
-          debugger
+        if (data?.data?.content) {
+          setPlaylists(data.data.content);
         }
+        debugger
       })
       .catch(error => {
         console.log(error)

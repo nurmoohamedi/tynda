@@ -105,6 +105,10 @@ th:last-child {
     display: flex;
     align-items: center;
 }
+.table-col-3 {
+    height: 56px;
+    text-align: center;
+}
 
 .table-col-2 img {
     width: 40px;

@@ -1,6 +1,7 @@
 import './App.css';
 import Login from "./components/Login/Login";
 import * as React from "react";
+import ReactDOM from 'react-dom/client';
 import {NavLink, Route, Routes} from "react-router-dom";
 import {useEffect, useState} from "react";
 import HomePage from "./components/Home/HomePage";
@@ -10,6 +11,8 @@ import BoardUser from "./components/DashBoard/BoardUser";
 import Tracks from "./components/Tracks/Tracks";
 import Media from "./components/Media";
 import Playlist from "./components/Playlists/Playlist";
+import Operations from "./components/Operations/Operations";
+import Modal from "./common/Modal";
 
 export const MainContext = React.createContext();
 
@@ -64,17 +67,19 @@ function App() {
             <Route path={"/login"} element={<Login/>}/>
             {/*<Route path={"app/*"} element={<Main showSnack={showSnack}/>}/>*/}
             <Route path={"/playlists"} element={<BoardUser/>}/>
+            <Route path={"/playlist"} element={<Operations type={"playlist"}/>}/>
             <Route path={"/playlist/:id"} element={<Playlist/>}/>
             <Route path={"/tracks"} element={<Tracks/>}/>
             <Route path={"/media"} element={<Media/>}/>
+            <Route path={"/users"} element={<Operations type={"users"}/>}/>
             <Route path={"/"} exact element={<HomePage/>}/>
             {/*<Route path={"/*"} element={<NotFound/>}/>*/}
           </Routes>
         </div>
       </div>
       <PlayerBar/>
+      { ReactDOM.createRoot(document.getElementById('portal')).render(<Modal />) }
     </MainContext.Provider>
   );
 }
-
 export default App;

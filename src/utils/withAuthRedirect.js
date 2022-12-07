@@ -1,10 +1,11 @@
 import React from "react";
 // import {connect} from "react-redux";
 import {Route, Routes, Navigate} from "react-router-dom";
+import {connect} from "react-redux";
 
 
 const mapStateToProps = (state) => ({
-    isAuth: state.auth.isAuth
+    isAuth: state.user.isAuth
 })
 const withAuthRedirect = (Component) => {
 
@@ -29,16 +30,14 @@ const withAuthRedirect = (Component) => {
         // }
 
         render() {
-            if (!localStorage.getItem('user')) {
-                debugger
+            if (!this.props.isAuth) {
                 return <Navigate to="/login"/>
             }
             return <Component {...this.props}/>
         }
     }
 
-    // return connect(mapStateToProps)(RedirectComponent);
-    return RedirectComponent;
+    return connect(mapStateToProps)(RedirectComponent);
 }
 
 export default withAuthRedirect;

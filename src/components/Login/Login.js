@@ -32,11 +32,11 @@ function Copyright(props) {
 
 const theme = createTheme();
 
-const Login = ({ user, setUserLogin }) => {
+const Login = ({ userLogin, setUserLogin }) => {
 
   const [isSignUp, setSignUp] = useState(false);
   const [authorized, setAuthorized] = useState(false);
-  const [error, setError] = useState({});
+  const [errors, setErrors] = useState([]);
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
@@ -52,32 +52,37 @@ const Login = ({ user, setUserLogin }) => {
     if (!isSignUp) {
       AuthService.login(data.get('username'), data.get('password'))
         .then(data => {
-          if (data.username) {
-            setAuthorized(data);
+          if (data.resultCode === 0) {
+            setUserLogin(data.data);
             navigate("/playlists");
-            debugger
           } else {
-            setError(data.message)
-            debugger
+            setErrors(data.message)
           }
         }, error => {
-          setError(error);
+          setErrors(error);
         });
     } else {
       AuthService.register(data.get('username'), data.get('email'), data.get('password'))
         .then(data => {
-          setAuthorized(data)
-          navigate("/playlists");
-          debugger
+          if (data.resultCode === 0) {
+            setAuthorized(data)
+            setUserLogin(data);
+            navigate("/playlists");
+          } else {
+            // TODO Here need to call error handler method from Redux
+            debugger
+            console.log(data)
+            setErrors(data.data);
+          }
         }, error => {
-          setError(error);
+          setErrors(error);
         });
     }
   };
 
   return (
     <ThemeProvider theme={theme}>
-      <Grid container component="main" sx={{height: '100vh'}}>
+      <Grid container component="main" sx={{height: '100vh', backgroundColor: '#fff'}}>
         <CssBaseline/>
         <Grid
           item
@@ -109,12 +114,6 @@ const Login = ({ user, setUserLogin }) => {
             <Typography component="h1" variant="h3">
               {!isSignUp ? 'Sign in' : 'Sign up'}
             </Typography>
-            <div>
-              {error && <p style={{color: 'red'}}>{error.message}</p>}
-              {authorized && (
-                <Navigate to="/playlists" replace={true}/>
-              )}
-            </div>
             {
               !isSignUp
                 ? <Box component="form" noValidate onSubmit={handleSubmit} sx={{mt: 1}}>
@@ -230,6 +229,6 @@ const Login = ({ user, setUserLogin }) => {
 }
 
 export default connect(
-  ({user}) => ({user}),
+  ({user: {userLogin}}) => ({userLogin}),
   {setUserLogin}
 )(Login);

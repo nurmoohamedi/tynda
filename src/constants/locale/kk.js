@@ -1,4 +1,5 @@
 export default {
   tynda: 'Тыңда',
-  tynda_stream_service: 'Тыңда стрим сервисі'
+  tynda_stream_service: 'Тыңда стрим сервисі',
+  addNew: 'Жаңасын қос'
 }

@@ -3,8 +3,9 @@ import styles from "./BoardUser.module.css"
 import UserService from "../../services/user.service";
 import EventBus from "../../common/EventBus";
 import withAuthRedirect from "../../utils/withAuthRedirect";
+import {connect} from "react-redux";
 
-const BoardUser = () => {
+const BoardUser = ({ userLogin, userRole }) => {
   const [content, setContent] = useState("");
   const [user, setUser] = useState(undefined);
 
@@ -39,16 +40,20 @@ const BoardUser = () => {
         { content }
       </div>
       <div>
-        <p>Email: { user && user.email }</p>
-        <p>Username: { user && user.username }</p>
-        <p>Password: { user && user.password }</p>
+        <p>Email: { userLogin && userLogin.email }</p>
+        <p>Username: { userLogin && userLogin.username }</p>
+        <p>Password: { userLogin && userLogin.password }</p>
       </div>
       <br/>
       <div>
-        Role:{ user && user.roles[0]}
+        Role:{ userLogin && userLogin.roles[0]}
+        <br/>
+        Role2:{ userRole && userRole}
       </div>
     </div>
   );
 };
 
-export default withAuthRedirect(BoardUser);
+
+const Playlist = withAuthRedirect(BoardUser);
+export default connect(({user: {userLogin, userRole}})=>({userLogin, userRole}), {})(Playlist);
