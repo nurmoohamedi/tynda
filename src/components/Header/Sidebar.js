@@ -204,7 +204,7 @@ const Sidebar = ({userRole}) => {
   )
 }
 
-const mapStateToProps = ({user: {userRole}}) => ({userRole})
+const mapStateToProps = ({user: {userRole}}) => ({userRole});
 export default connect(({
                           user: {userRole}
                         }) => ({userRole}), null)(Sidebar);

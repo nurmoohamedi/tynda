@@ -177,3 +177,20 @@ body{
   margin: 8px 0;
   min-height: 1px;
 }
+
+.login_logged {
+  /*background-color: rgba(0,0,0,.7);*/
+  border-radius: 23px;
+  background-color: rgba(220, 220, 220, 0.7);
+  color: #000;
+  height: 32px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.login_logged p {
+  font-size: 14px;
+  font-weight: 600;
+}

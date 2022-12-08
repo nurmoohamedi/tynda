@@ -13,10 +13,11 @@ import Media from "./components/Media";
 import Playlist from "./components/Playlists/Playlist";
 import Operations from "./components/Operations/Operations";
 import Modal from "./common/Modal";
+import {connect} from "react-redux";
 
 export const MainContext = React.createContext();
 
-function App() {
+function App({ userLogin }) {
 
   const [isSnackOpen, setSnackOpen] = useState(false);
   const [status, setStatus] = useState("");
@@ -78,8 +79,11 @@ function App() {
         </div>
       </div>
       <PlayerBar/>
-      { ReactDOM.createRoot(document.getElementById('portal')).render(<Modal />) }
+      {/*{ ReactDOM.createRoot(document.getElementById('portal')).render(<Modal />) }*/}
     </MainContext.Provider>
   );
 }
-export default App;
+
+export default connect(({
+                          user: {userLogin}
+                        }) => ({userLogin}), null)(App);
